@@ -1,4 +1,4 @@
-package org.example.Event;
+package org.example.Events;
 
 import org.example.GeoCore.Location;
 
