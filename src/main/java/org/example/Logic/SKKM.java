@@ -2,7 +2,6 @@ package org.example.Logic;
 
 import org.example.Events.Event;
 import org.example.Events.EventType;
-import org.example.Events.IEventObserver;
 import org.example.GeoCore.Calculators.IDistanceCalculator;
 import org.example.Logic.Strategy.FireStrategy;
 import org.example.Logic.Strategy.IDispatchStrategy;
@@ -13,7 +12,7 @@ import org.example.Resources.Vehicle;
 
 import java.util.List;
 
-public class SKKM implements IEventObserver {
+public class SKKM {
     private final List<Unit> units;
     private final IDistanceCalculator distanceCalculator;
 
@@ -22,7 +21,6 @@ public class SKKM implements IEventObserver {
         this.distanceCalculator = distanceCalculator;
     }
 
-    @Override
     public void onEventReceived(Event event) {
         System.out.println("\n[SKKM] Otrzymano zgłoszenie: " + event);
         handleDispatch(event);
@@ -54,9 +52,20 @@ public class SKKM implements IEventObserver {
                 System.out.printf(" -> Dysponowanie z %s (odległość: %.4f). Ilość: %d%n",
                         currentUnit.getName(), dist, vehiclesToTake);
 
+
+                int groupTravelTime = java.util.concurrent.ThreadLocalRandom.current().nextInt(0, 4);
+                int groupActionTime = java.util.concurrent.ThreadLocalRandom.current().nextInt(5, 26);
+                int groupReturnTime = java.util.concurrent.ThreadLocalRandom.current().nextInt(0, 4);
+                boolean groupFalseAlarm = java.util.concurrent.ThreadLocalRandom.current().nextDouble() < 0.05;
+
                 for (int i = 0; i < vehiclesToTake; i++) {
                     Vehicle v = availableVehicles.get(i);
-                    v.setState(new TravelingState());
+
+                    System.out.println("    [START] " + v.getId() + " (T:" + groupTravelTime +
+                            " | A:" + (groupFalseAlarm ? "FA" : groupActionTime) +
+                            " | R:" + groupReturnTime + ")");
+
+                    v.setState(new TravelingState(groupTravelTime, groupActionTime, groupReturnTime, groupFalseAlarm));
                 }
 
                 vehiclesNeeded -= vehiclesToTake;

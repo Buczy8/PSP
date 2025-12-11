@@ -7,8 +7,8 @@ import java.util.concurrent.ThreadLocalRandom;
 public class ReturningState implements IVehicleState{
     private int timeLeft;
 
-    public ReturningState() {
-        this.timeLeft = ThreadLocalRandom.current().nextInt(0, 4);
+    public ReturningState(int returnTime) {
+        this.timeLeft = returnTime;
     }
 
     @Override

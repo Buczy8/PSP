@@ -1,5 +1,6 @@
 package org.example;
 
+import org.example.Events.Event;
 import org.example.Events.EventGenerator;
 import org.example.GeoCore.Calculators.HaversineDistanceCalculator;
 import org.example.GeoCore.Calculators.IDistanceCalculator;
@@ -46,9 +47,6 @@ public class Main {
         // Generator - Źródło problemów (Subject)
         EventGenerator generator = new EventGenerator(krakowArea);
 
-        // Rejestracja obserwatora (Wpięcie SKKM do systemu powiadamiania)
-        generator.addObserver(skkm);
-
         // 4. Pętla Główna Symulacji
         System.out.println(">>> START SYMULACJI (Ctrl+C aby zatrzymać) <<<");
 
@@ -56,8 +54,10 @@ public class Main {
         try {
             while (true) {
                 // A. Generator sprawdza, czy wygenerować nowe zdarzenie
-                //    (Jeśli wygeneruje, automatycznie powiadomi SKKM, a SKKM zadysponuje wozy)
-                generator.tick();
+                if (generator.hasNext()) {
+                    Event event = generator.next();
+                    skkm.onEventReceived(event);
+                }
 
                 // B. Aktualizacja stanu wszystkich pojazdów (upływ czasu)
                 for (Unit unit : units) {
@@ -75,7 +75,7 @@ public class Main {
 
                 // Jedna iteracja pętli to jednostka czasu (np. 1 sekunda w świecie gry)
                 // Usypiamy wątek, żeby dało się czytać logi
-                Thread.sleep(5000);
+                Thread.sleep(500);
             }
         } catch (InterruptedException e) {
             System.out.println("\nSymulacja przerwana.");

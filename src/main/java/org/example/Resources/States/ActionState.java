@@ -6,9 +6,11 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class ActionState implements IVehicleState{
     private int timeLeft;
+    private final int returnTime;
 
-    public ActionState() {
-        this.timeLeft = ThreadLocalRandom.current().nextInt(5, 26);
+    public ActionState(int actionTime, int returnTime) {
+        this.timeLeft = actionTime;
+        this.returnTime = returnTime;
     }
 
     @Override
@@ -17,7 +19,7 @@ public class ActionState implements IVehicleState{
             timeLeft--;
         } else {
             System.out.println(" -> " + vehicle.getId() + ": Zakończono działania. Powrót.");
-            vehicle.setState(new ReturningState());
+            vehicle.setState((new ReturningState(returnTime)));
         }
     }
 
