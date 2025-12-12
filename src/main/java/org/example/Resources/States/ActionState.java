@@ -1,8 +1,7 @@
 package org.example.Resources.States;
 
 import org.example.Resources.Vehicle;
-
-import java.util.concurrent.ThreadLocalRandom;
+import static org.example.Utils.ConsoleColors.*;
 
 public class ActionState implements IVehicleState{
     private int timeLeft;
@@ -18,7 +17,7 @@ public class ActionState implements IVehicleState{
         if (timeLeft > 0) {
             timeLeft--;
         } else {
-            System.out.println(" -> " + vehicle.getId() + ": Zakończono działania. Powrót.");
+            System.out.println(" -> " + YELLOW + vehicle.getId() + RESET + ": " + PURPLE + "Zakończono działania. Powrót." + RESET);
             vehicle.setState((new ReturningState(returnTime)));
         }
     }

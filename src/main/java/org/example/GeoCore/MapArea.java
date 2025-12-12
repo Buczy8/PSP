@@ -14,14 +14,23 @@ public class MapArea {
     }
 
     public Location generateRandomPoint() {
-        double latDiff = topLeft.getLatitude() - bottomRight.getLatitude();
-        double lonDiff = bottomRight.getLongitude() - topLeft.getLongitude();
+        double minLat = Math.min(topLeft.getLatitude(), bottomRight.getLatitude());
+        double maxLat = Math.max(topLeft.getLatitude(), bottomRight.getLatitude());
 
+        double minLon = Math.min(topLeft.getLongitude(), bottomRight.getLongitude());
+        double maxLon = Math.max(topLeft.getLongitude(), bottomRight.getLongitude());
+
+        // 2. Obliczmy różnice (zawsze dodatnie)
+        double latDiff = maxLat - minLat;
+        double lonDiff = maxLon - minLon;
+
+        // 3. Losujemy przesunięcie
         double randomLatDelta = random.nextDouble() * latDiff;
         double randomLonDelta = random.nextDouble() * lonDiff;
 
-        double newLat = bottomRight.getLatitude() + randomLatDelta;
-        double newLon = topLeft.getLongitude() + randomLonDelta;
+        // 4. Dodajemy przesunięcie do najmniejszej wartości (dolny lewy róg logiczny)
+        double newLat = minLat + randomLatDelta;
+        double newLon = minLon + randomLonDelta;
 
         return new Location(newLat, newLon);
     }

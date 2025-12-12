@@ -1,10 +1,10 @@
 package org.example.Resources.States;
 
 import org.example.Resources.Vehicle;
+import static org.example.Utils.ConsoleColors.*;
 
-import java.util.concurrent.ThreadLocalRandom;
 
-public class TravelingState implements IVehicleState{
+public class TravelingState implements IVehicleState {
 
     private int timeLeft;
     private final int actionTime;
@@ -24,10 +24,10 @@ public class TravelingState implements IVehicleState{
             timeLeft--;
         } else {
             if (isFalseAlarm) {
-                System.out.println(" -> " + vehicle.getId() + ": Alarm Fałszywy! Powrót.");
+                System.out.println(" -> " + YELLOW + vehicle.getId() + RESET + ": " + RED + "Alarm Fałszywy! Powrót." + RESET);
                 vehicle.setState(new ReturningState(returnTime));
             } else {
-                System.out.println(" -> " + vehicle.getId() + ": Przystąpienie do działań.");
+                System.out.println(" -> " + YELLOW + vehicle.getId() + RESET + ": " + CYAN + "Przystąpienie do działań." + RESET);
                 vehicle.setState(new ActionState(actionTime, returnTime));
             }
         }

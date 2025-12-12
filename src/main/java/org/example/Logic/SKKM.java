@@ -10,7 +10,7 @@ import org.example.Logic.Strategy.LocalThreatStrategy;
 import org.example.Resources.States.TravelingState;
 import org.example.Resources.Unit;
 import org.example.Resources.Vehicle;
-
+import static org.example.Utils.ConsoleColors.*;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,24 +18,36 @@ import java.util.stream.Collectors;
 public class SKKM {
     private final List<Unit> units;
     private final IDistanceCalculator distanceCalculator;
+    private IDispatchStrategy dispatchStrategy;
 
     public SKKM(List<Unit> units, IDistanceCalculator distanceCalculator) {
         this.units = units;
         this.distanceCalculator = distanceCalculator;
     }
 
+    public void setDispatchStrategy(IDispatchStrategy dispatchStrategy) {
+        this.dispatchStrategy = dispatchStrategy;
+    }
+
     public void onEventReceived(Event event) {
-        System.out.println("\n[SKKM] Otrzymano zgłoszenie: " + event);
+        System.out.println("\n" + CYAN + "[SKKM] Otrzymano zgłoszenie: " + event + RESET);
+
+        if (event.getType() == EventType.PZ) {
+            setDispatchStrategy(new FireStrategy());
+        } else {
+            setDispatchStrategy(new LocalThreatStrategy());
+        }
         handleDispatch(event);
     }
 
     private void handleDispatch(Event event) {
-        IDispatchStrategy strategy = getStrategyForEvent(event);
-
-        int vehiclesNeeded = strategy.getRequiredVehiclesCount();
+        if (dispatchStrategy == null) {
+            throw new IllegalStateException("Strategia nie została ustawiona!");
+        }
+        int vehiclesNeeded = dispatchStrategy.getRequiredVehiclesCount();
         int vehiclesDispatched = 0;
 
-        System.out.println("[SKKM] Wymagane siły: " + vehiclesNeeded);
+        System.out.println("[SKKM] Wymagane siły: " + WHITE_BOLD + vehiclesNeeded + RESET);
 
         List<Unit> closestUnits = getUnitsSortedByDistance(event.getLocation());
 
@@ -55,28 +67,18 @@ public class SKKM {
 
         logDispatchResult(vehiclesNeeded, vehiclesDispatched);
 
-        if (vehiclesNeeded > 0) {
-            System.out.println("[SKKM] UWAGA: Brak dostępnych sił i środków! Zadysponowano tylko: " + vehiclesDispatched);
-        } else {
-            System.out.println("[SKKM] Dysponowanie zakończone sukcesem.");
-        }
     }
+
     private List<Unit> getUnitsSortedByDistance(Location targetLocation) {
         return units.stream()
                 .sorted(Comparator.comparingDouble(unit ->
                         distanceCalculator.calculateDistance(unit.getLocation(), targetLocation)))
                 .collect(Collectors.toList());
     }
-    private IDispatchStrategy getStrategyForEvent(Event event) {
-        if (event.getType() == EventType.PZ) {
-            return new FireStrategy();
-        } else {
-            return new LocalThreatStrategy();
-        }
-    }
+
     private void dispatchVehiclesFromUnit(Unit unit, List<Vehicle> vehicles, int count, Location targetLocation) {
         double dist = distanceCalculator.calculateDistance(unit.getLocation(), targetLocation);
-        System.out.printf(" -> Dysponowanie z %s (odległość: %.4f). Ilość: %d%n",
+        System.out.printf(PURPLE + " -> Dysponowanie z %s (odległość: %.2f m). Ilość: %d" + RESET + "%n",
                 unit.getName(), dist, count);
 
         // Symulacja parametrów czasu (RNG)
@@ -87,8 +89,8 @@ public class SKKM {
 
         for (int i = 0; i < count; i++) {
             Vehicle v = vehicles.get(i);
-            System.out.println("    [START] " + v.getId() + " (T:" + groupTravelTime +
-                    " | A:" + (groupFalseAlarm ? "FA" : groupActionTime) +
+            System.out.println("    [START] " + YELLOW + v.getId() + RESET + " (T:" + groupTravelTime +
+                    " | A:" + (groupFalseAlarm ? RED + "FA" + RESET : groupActionTime) +
                     " | R:" + groupReturnTime + ")");
 
             v.setState(new TravelingState(groupTravelTime, groupActionTime, groupReturnTime, groupFalseAlarm));
@@ -97,9 +99,9 @@ public class SKKM {
 
     private void logDispatchResult(int needed, int dispatched) {
         if (dispatched < needed) {
-            System.out.println("[SKKM] UWAGA: Brak dostępnych sił i środków! Zadysponowano tylko: " + dispatched);
+            System.out.println(RED + "\033[1m" + "[SKKM] UWAGA: Brak dostępnych sił i środków! Zadysponowano tylko: " + dispatched + "/" + needed + RESET);
         } else {
-            System.out.println("[SKKM] Dysponowanie zakończone sukcesem.");
+            System.out.println(GREEN + "[SKKM] Dysponowanie zakończone sukcesem." + RESET);
         }
     }
 }
