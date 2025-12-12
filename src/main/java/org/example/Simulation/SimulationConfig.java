@@ -44,6 +44,7 @@ public class SimulationConfig {
         units.add(new Unit("JRG-7", new Location(50.094128525666704, 19.977419062585525)));
         units.add(new Unit("SA PSP", new Location(50.077389907335885, 20.03302073453739)));
         units.add(new Unit("JRG Skawina", new Location(49.96841205098495, 19.799509902622734)));
+        units.add(new Unit("LSP Balice", new Location(50.07937442476652, 19.79029349118938)));
 
         Map<EventType, IDispatchStrategy> strategies = new HashMap<>();
         strategies.put(EventType.PZ, new FireStrategy());
