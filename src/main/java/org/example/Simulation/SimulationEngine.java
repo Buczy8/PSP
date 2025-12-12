@@ -20,7 +20,6 @@ public class SimulationEngine {
             while (true) {
                 if (config.generator.hasNext()) {
                     Event event = config.generator.next();
-                    config.skkm.onEventReceived(event);
                 }
 
                 for (Unit unit : config.units) {

@@ -26,15 +26,4 @@ public class MapArea {
 
         return new Location(newLat, newLon);
     }
-
-
-    public boolean contains(Location location) {
-        boolean latInside = location.getLatitude() <= topLeft.getLatitude() &&
-                location.getLatitude() >= bottomRight.getLatitude();
-
-        boolean lonInside = location.getLongitude() >= topLeft.getLongitude() &&
-                location.getLongitude() <= bottomRight.getLongitude();
-
-        return latInside && lonInside;
-    }
 }

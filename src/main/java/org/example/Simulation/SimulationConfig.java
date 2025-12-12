@@ -54,5 +54,6 @@ public class SimulationConfig {
         this.skkm = new SKKM(units, strategies, dispatcher);
 
         this.generator = new EventGenerator(krakowArea);
+        this.generator.addObserver(this.skkm);
     }
 }

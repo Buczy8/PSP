@@ -6,8 +6,9 @@ import org.example.GeoCore.MapArea;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.concurrent.ThreadLocalRandom;
+import org.example.Patterns.ObservedSubject;
 
-public class EventGenerator implements Iterator<Event> {
+public class EventGenerator extends ObservedSubject implements Iterator<Event> {
     private final MapArea mapArea;
     private Event nextEvent;
 
@@ -34,7 +35,10 @@ public class EventGenerator implements Iterator<Event> {
             throw new NoSuchElementException("No new event generated in this tick.");
         }
         Event eventToReturn = nextEvent;
-        nextEvent = null; // Consume the event
+        nextEvent = null;
+
+        notifyObservers(eventToReturn);
+
         return eventToReturn;
     }
 
