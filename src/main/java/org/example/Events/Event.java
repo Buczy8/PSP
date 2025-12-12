@@ -5,6 +5,7 @@ import org.example.GeoCore.Location;
 public class Event {
     private final EventType type;
     private final Location location;
+    private boolean active = true;
 
     public Event(EventType type, Location location) {
         this.type = type;
@@ -17,6 +18,14 @@ public class Event {
 
     public Location getLocation() {
         return location;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     @Override

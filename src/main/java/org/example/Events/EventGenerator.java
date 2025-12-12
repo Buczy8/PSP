@@ -21,7 +21,6 @@ public class EventGenerator implements Iterator<Event> {
         if (nextEvent != null) {
             return true;
         }
-        // Attempt to generate a new event based on probability
         if (ThreadLocalRandom.current().nextDouble() < 0.10) {
             nextEvent = generateEvent();
             return true;

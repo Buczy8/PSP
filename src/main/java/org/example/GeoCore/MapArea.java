@@ -3,8 +3,8 @@ package org.example.GeoCore;
 import java.util.Random;
 
 public class MapArea {
-    private final Location topLeft;      // Północny-Zachód
-    private final Location bottomRight;  // Południowy-Wschód
+    private final Location topLeft;
+    private final Location bottomRight;
     private final Random random;
 
     public MapArea(Location topLeft, Location bottomRight) {
@@ -14,23 +14,15 @@ public class MapArea {
     }
 
     public Location generateRandomPoint() {
-        double minLat = Math.min(topLeft.getLatitude(), bottomRight.getLatitude());
-        double maxLat = Math.max(topLeft.getLatitude(), bottomRight.getLatitude());
+        double latDiff = topLeft.getLatitude() - bottomRight.getLatitude();
+        double lonDiff = bottomRight.getLongitude() - topLeft.getLongitude();
 
-        double minLon = Math.min(topLeft.getLongitude(), bottomRight.getLongitude());
-        double maxLon = Math.max(topLeft.getLongitude(), bottomRight.getLongitude());
-
-        // 2. Obliczmy różnice (zawsze dodatnie)
-        double latDiff = maxLat - minLat;
-        double lonDiff = maxLon - minLon;
-
-        // 3. Losujemy przesunięcie
         double randomLatDelta = random.nextDouble() * latDiff;
         double randomLonDelta = random.nextDouble() * lonDiff;
 
-        // 4. Dodajemy przesunięcie do najmniejszej wartości (dolny lewy róg logiczny)
-        double newLat = minLat + randomLatDelta;
-        double newLon = minLon + randomLonDelta;
+        double newLat = bottomRight.getLatitude() + randomLatDelta;
+        double newLon = topLeft.getLongitude() + randomLonDelta;
+
 
         return new Location(newLat, newLon);
     }
